@@ -1,200 +1,61 @@
 namespace AudioScripts
 {
+    using StaticDataScripts;
     using System.Collections;
     using UnityEngine;
     using UnityEngine.Networking;
 
     public class AudioManager : MonoBehaviour
     {
-        public const byte Select1AudioClipIndex = 0;
-        public const float AudioClipLoadDelayDuration = 0.1f;
-        private double songAudioStartTime = 0;
-        private float songAudioSourceVolume = 1f;
-        private float userInterfaceAudioSourceVolume = 1f;
-        private bool hasPaused = false;
-        [SerializeField] private AudioSource songAudioSource = default;
-        [SerializeField] private AudioSource userInterfaceAudioSource = default;
-        [SerializeField] private AudioClip[] userInterfaceAudioClipArray = default;
-        private IEnumerator loadSongAudioClipFromFileCoroutine;
-        private IEnumerator checkToLoopAudioCoroutine;
-        private IEnumerator playAudioAndTimeManagerFromStartTimeCoroutine;
-        private TimeManager timeManager;
+        [field: SerializeField] public AudioSource AudioSource { get; private set; }
+        private IEnumerator loadAudioCoroutine;
 
-        public void PlayScheduledSongAudio(double _timeToPlay)
+        public void PlayScheduledAudio(double _playTime) => AudioSource.PlayScheduled(AudioSettings.dspTime + _playTime);
+        public void SetAudioTime(float _time) => AudioSource.time = _time;
+        public void LoadAudio(string _beatmapFolderPath, float _audioStartTime)
         {
-            songAudioStartTime = AudioSettings.dspTime + _timeToPlay;
-            songAudioSource.PlayScheduled(songAudioStartTime);
-        }
-        public void SetAudioStartTime(float _audioStartTime)
-        {
-            songAudioSource.time = _audioStartTime;
-        }
-        public void PlayOneShotUserInterfaceAudioSource(byte _clipIndex)
-        {
-            userInterfaceAudioSource.PlayOneShot(userInterfaceAudioClipArray[_clipIndex], userInterfaceAudioSourceVolume);
-        }
-        public void LoadSongAudioClipFromFile(string _beatmapFolderPath, float _audioStartTime, TimeManager timeManager,
-            SongSlider _songSlider)
-        {
-            if (loadSongAudioClipFromFileCoroutine != null)
+            if (loadAudioCoroutine != null)
             {
-                StopCoroutine(loadSongAudioClipFromFileCoroutine);
+                StopCoroutine(loadAudioCoroutine);
             }
 
-            loadSongAudioClipFromFileCoroutine = LoadSongAudioClipFromFileCoroutine(_beatmapFolderPath, _audioStartTime,
-                timeManager, _songSlider);
-            StartCoroutine(loadSongAudioClipFromFileCoroutine);
+            loadAudioCoroutine = LoadAudioCoroutine(_beatmapFolderPath, _audioStartTime);
+            StartCoroutine(loadAudioCoroutine);
         }
-        private void Awake()
+        private IEnumerator LoadAudioCoroutine(string _path, float _playTime = 0f)
         {
-            timeManager = FindObjectOfType<TimeManager>();
-            notification = FindObjectOfType<Notification>();
-            songAudioSource.volume = songAudioSourceVolume;
-            userInterfaceAudioSource.volume = userInterfaceAudioSourceVolume;
-        }
-        private IEnumerator LoadSongAudioClipFromFileCoroutine(string _beatmapFolderPath, float _audioStartTime,
-            TimeManager _timeManager, SongSlider _songSlider)
-        {
-            DeactivateSongAudioSource();
-            UnloadSongAudioClip();
-            _timeManager.StopTimer();
+            AudioSource.gameObject.SetActive(false);
+            UnloadAudioClip();
 
-            if (string.IsNullOrEmpty(_beatmapFolderPath) == false)
+            if (string.IsNullOrEmpty(_path) == false)
             {
-                string audioFilePath = string.Empty;
-                bool hasLoadedAudioFile = false;
-
-                for (byte i = 0; i < FileTypes.AudioFileTypesArray.Length; i++)
+                _path += FileTypes.Audio;
+                using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(_path, AudioType.OGGVORBIS))
                 {
-                    audioFilePath = $"{_beatmapFolderPath}/{FileTypes.AudioFileTypesArray[i]}";
+                    ((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = true;
+                    yield return uwr.SendWebRequest();
 
-                    using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(audioFilePath, AudioType.OGGVORBIS))
+                    if (uwr.result == UnityWebRequest.Result.ConnectionError ||
+                      uwr.result == UnityWebRequest.Result.DataProcessingError ||
+                      uwr.result == UnityWebRequest.Result.ProtocolError)
                     {
-                        ((DownloadHandlerAudioClip)www.downloadHandler).streamAudio = true;
-                        yield return www.SendWebRequest();
-
-                        if (www.isNetworkError || www.isHttpError)
-                        {
-                            hasLoadedAudioFile = false;
-                        }
-                        else
-                        {
-                            songAudioSource.clip = DownloadHandlerAudioClip.GetContent(www);
-
-                            yield return new WaitForSeconds(AudioClipLoadDelayDuration);
-
-                            PlayAudioAndTimeManagerFromStartTime(_audioStartTime, _timeManager);
-
-                            yield return new WaitForSeconds(AudioClipLoadDelayDuration);
-
-                            _songSlider.LerpSliderToValue(UtilityMethods.GetSliderValuePercentageFromTime(_audioStartTime,
-                                songAudioSource.clip.length), AudioClipLoadDelayDuration);
-
-                            yield return new WaitForSeconds(AudioClipLoadDelayDuration);
-
-                            _songSlider.UpdateSongSliderProgress();
-
-                            yield return new WaitForSeconds(AudioClipLoadDelayDuration);
-
-                            hasLoadedAudioFile = true;
-                        }
-                    }
-
-                    if (hasLoadedAudioFile == true)
-                    {
-                        break;
+                        Debug.Log("Error loading audio");
                     }
                     else
                     {
-                        if (i == FileTypes.AudioFileTypesArray.Length)
-                        {
-                            DeactivateSongAudioSource();
-                            DisplayErrorNotification(audioFilePath);
-                        }
-                        continue;
+                        AudioSource.clip = DownloadHandlerAudioClip.GetContent(uwr);
                     }
                 }
             }
-            else
-            {
-                DisplayErrorNotification("beatmap folder path null");
-            }
-
+            AudioSource.gameObject.SetActive(false);
             yield return null;
         }
-        private void CheckToLoopAudio()
+        private void UnloadAudioClip() 
         {
-            if (checkToLoopAudioCoroutine != null)
+            if (AudioSource.clip != null)
             {
-                StopCoroutine(checkToLoopAudioCoroutine);
+                AudioSource.clip.UnloadAudioData();
             }
-
-            checkToLoopAudioCoroutine = CheckToLoopAudioCoroutine();
-            StartCoroutine(checkToLoopAudioCoroutine);
-        }
-        private IEnumerator CheckToLoopAudioCoroutine()
-        {
-            while (songAudioSource.gameObject.activeSelf == true)
-            {
-                CheckIfAudioHasReachedEndOfClip();
-                yield return null;
-            }
-            yield return null;
-        }
-        private void CheckIfAudioHasReachedEndOfClip()
-        {
-            if (songAudioSource.isPlaying == false)
-            {
-                if (hasPaused == false)
-                {
-                    PlayAudioAndTimeManagerFromStartTime(0f, timeManager);
-                }
-            }
-        }
-        private void PlayAudioAndTimeManagerFromStartTime(float _audioStartTime, TimeManager _timeManager)
-        {
-            if (playAudioAndTimeManagerFromStartTimeCoroutine != null)
-            {
-                StopCoroutine(playAudioAndTimeManagerFromStartTimeCoroutine);
-            }
-
-            playAudioAndTimeManagerFromStartTimeCoroutine = PlayAudioAndTimeManagerFromStartTimeCoroutine(_audioStartTime,
-                _timeManager);
-
-            StartCoroutine(playAudioAndTimeManagerFromStartTimeCoroutine);
-        }
-        private IEnumerator PlayAudioAndTimeManagerFromStartTimeCoroutine(float _audioStartTime, TimeManager _timeManager)
-        {
-            ActivateSongAudioSource();
-            PlayScheduledSongAudio(AudioClipLoadDelayDuration);
-            SetAudioStartTime(_audioStartTime);
-            yield return new WaitForSeconds(AudioClipLoadDelayDuration);
-            _timeManager.RecalculateAndPlayFromNewPosition();
-            CheckToLoopAudio();
-            yield return null;
-        }
-        private void DeactivateSongAudioSource()
-        {
-            songAudioSource.gameObject.SetActive(false);
-        }
-        private void ActivateSongAudioSource()
-        {
-            if (songAudioSource.gameObject.activeSelf == false)
-            {
-                songAudioSource.gameObject.SetActive(true);
-            }
-        }
-        private void UnloadSongAudioClip()
-        {
-            if (songAudioSource.clip != null)
-            {
-                songAudioSource.clip.UnloadAudioData();
-                //AudioClip.DestroyImmediate(songAudioSource.clip, true);
-            }
-        }
-        private void DisplayErrorNotification(string _error)
-        {
-            notification.DisplayDescriptionNotification(ColorName.RED, "error loading beatmap audio", _error, 4f);
         }
     }
 }

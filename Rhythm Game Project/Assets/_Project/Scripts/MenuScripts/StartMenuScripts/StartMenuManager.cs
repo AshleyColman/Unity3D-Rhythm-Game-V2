@@ -9,7 +9,6 @@
     public sealed class StartMenuManager : Menu
     {
         [SerializeField] private GameObject startPanel = default;
-        [SerializeField] private Image backgroundImage = default;
         [SerializeField] private TitleText titleText = default;
         [SerializeField] private FadeText fadeText = default;
         [SerializeField] private TimeManager timeManager = default;
@@ -31,7 +30,7 @@
             startPanel.SetActive(true);
             fadeTransition.TransitionIn();
             fadeText.PlayAlphaCanvasTweenLoop();
-            timeManager.SetTimeManager(191, 1000, 1);
+            timeManager.SetTimeManager(191, 1000);
             yield return new WaitForSeconds(1f);
             textTyper.TypeTextCancelFalse("rhythm game", titleText.TextArr);
             yield return new WaitForSeconds(textTyper.TextTypingDuration("rhythm game"));

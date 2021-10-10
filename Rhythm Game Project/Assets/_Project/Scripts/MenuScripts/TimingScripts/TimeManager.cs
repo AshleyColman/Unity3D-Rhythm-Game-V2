@@ -1,9 +1,10 @@
 ﻿namespace TimingScripts
 {
+    using AudioScripts;
     using System.Collections.Generic;
     using UnityEngine;
 
-    public abstract class TimeManager : MonoBehaviour
+    public class TimeManager : MonoBehaviour
     {
         [SerializeField] private AudioManager audioManager = default;
         private const byte Step = 4;
@@ -15,45 +16,32 @@
         private double interval = 0;
         private double beatsPerMinute = 120;
         private double offsetMilliseconds = 0;
-        private double songTime = 0;
         private bool timerStarted = false;
 
-        public void SetTimeManager(double _beatsPerMinute, double _offsetMilliseconds,
-            double _playTime = 0)
+        public void SetTimeManager(double _beatsPerMinute, double _offsetMilliseconds)
         {
-            SetInitialValues(_beatsPerMinute, _offsetMilliseconds, _playTime);
+            SetInitialValues(_beatsPerMinute, _offsetMilliseconds);
             StartTimer();
             UpdateTimingPosition();
         }
-        private void SetInitialValues(double _beatsPerMinute, double _offsetMilliseconds, double _playTime)
+        private void SetInitialValues(double _beatsPerMinute, double _offsetMilliseconds)
         {
             this.beatsPerMinute = _beatsPerMinute;
             this.offsetMilliseconds = _offsetMilliseconds;
-            this.songTime = _playTime;
         }
         private void StartTimer() => timerStarted = true;
         private void StopTimer() => timerStarted = false;
-        private void UpdateTimer()
-        {
-            UpdateTimerToAudioTime();
-            CheckIfOnTick();
-        }
         private void UpdateTimingPosition()
         {
             CalculateIntervals();
             SetClosestTickAndMeasure();
             SetStepBasedOnCurrentAudioTime();
         }
-        private void UpdateTimerToAudioTime()
-        {
-            //songTime = AudioSettings.dspTime - audioManager.SongAudioStartTime;
-            songTime = audioManager.SongAudioSource.time;
-        }
         private void CheckIfOnTick()
         {
             if (currentTick < tickTimeArr.Length)
             {
-                if (songTime >= tickTimeArr[currentTick])
+                if (audioManager.AudioSource.time >= tickTimeArr[currentTick])
                 {
                     OnTick();
                     CheckIfMeasure();
@@ -66,14 +54,14 @@
         {
             if (timerStarted == true)
             {
-                UpdateTimer();
+                CheckIfOnTick();
             }
         }
         private void SetClosestTickAndMeasure()
         {
             for (ushort i = 0; i < tickTimeArr.Length; i++)
             {
-                if (songTime <= tickTimeArr[i])
+                if (audioManager.AudioSource.time <= tickTimeArr[i])
                 {
                     currentMeasure = (ushort)(i / 4);
                     currentTick = i;
@@ -97,7 +85,7 @@
         }
         private void CalculateIntervals()
         {
-            if (audioManager.SongAudioSource.clip != null)
+            if (audioManager.AudioSource.clip != null)
             {
                 int i = 0;
                 int multiplier = (Base / Step);
@@ -105,7 +93,7 @@
                 interval = (tmpInterval / multiplier);
                 var tickTimeList = new List<double>();
 
-                while (interval * i <= audioManager.SongAudioSource.clip.length)
+                while (interval * i <= audioManager.AudioSource.clip.length)
                 {
                     tickTimeList.Add((interval * i) + (offsetMilliseconds / 1000f));
                     i++;
