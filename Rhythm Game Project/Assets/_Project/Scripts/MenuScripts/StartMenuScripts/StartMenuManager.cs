@@ -5,8 +5,9 @@
     using UnityEngine.UI;
     using TimingScripts;
     using UIScripts;
+    using AccountScripts;
 
-    public sealed class StartMenuManager : Menu
+    public sealed class StartMenuManager : InputMenu
     {
         [SerializeField] private GameObject startPanel = default;
         [SerializeField] private TitleText titleText = default;
@@ -15,6 +16,7 @@
         [SerializeField] private FadeTransition fadeTransition = default;
         [SerializeField] private BackgroundManager backgroundManager = default;
         [SerializeField] private TextTyper textTyper = default;
+        [SerializeField] private AccountMenu accountMenu = default;
         private IEnumerator startGameCoroutine;
         private bool gameStarted = false;
 
@@ -48,15 +50,18 @@
         }
         protected override IEnumerator CheckInputCoroutine()
         {
-            CheckInputToStartGame();
-            return base.CheckInputCoroutine();
+            while (startPanel.gameObject.activeSelf == true)
+            {
+                CheckInputToStartGame();
+                yield return null;
+            }
         }
         private void Awake() => TransitionIn();
         private void CheckInputToStartGame()
         {
             if (gameStarted == false)
             {
-                if (Input.anyKeyDown == true)
+                if (Input.GetMouseButtonDown(0) == true || Input.GetMouseButtonDown(1))
                 {
                     StartGame();
                 }
@@ -80,7 +85,8 @@
             textTyper.TypeTextCancelFalse("game started", titleText.TextArr);
             textTyper.TypeTextCancelFalse("welcome", fadeText.TextArr);
             yield return new WaitForSeconds(2f);
-            //accountPanel.TransitionIn();
+            fadeText.PlayAlphaCanvasTweenLoop();
+            accountMenu.TransitionIn();
             //descriptionPanel.TransitionIn();
             //controlPanel.TransitionIn();
         }

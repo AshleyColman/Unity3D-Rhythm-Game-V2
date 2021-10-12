@@ -7,7 +7,6 @@ public abstract class Menu : MonoBehaviour
     [SerializeField] protected GameObject screen = default;
     private IEnumerator transitionInCoroutine;
     private IEnumerator transitionOutCoroutine;
-    private IEnumerator checkInputCoroutine;
 
     public void TransitionIn()
     {
@@ -33,23 +32,6 @@ public abstract class Menu : MonoBehaviour
     }
     protected virtual IEnumerator TransitionOutCoroutine()
     {
-        if (checkInputCoroutine != null)
-        {
-            StopCoroutine(checkInputCoroutine);
-        }
         yield return null;
-    }
-    protected virtual IEnumerator CheckInputCoroutine()
-    {
-        yield return null;
-    }
-    protected void CheckInput()
-    {
-        if (checkInputCoroutine != null)
-        {
-            StopCoroutine(checkInputCoroutine);
-        }
-        checkInputCoroutine = CheckInputCoroutine();
-        StartCoroutine(checkInputCoroutine);
     }
 }
