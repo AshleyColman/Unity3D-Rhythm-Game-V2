@@ -15,11 +15,10 @@ namespace UIScripts
         [SerializeField] private TextMeshProUGUI titleText = default;
         [SerializeField] private TextMeshProUGUI descriptionText = default;
         [SerializeField] private FlashEffect flashEffect = default;
-        [SerializeField] private Colors colors = default;
         private IEnumerator showCoroutine;
         private IEnumerator transitionOutCoroutine;
 
-        public void Show(ColorType _color, string _title, string _description, float _duration = 4f)
+        public void Show(Color32 _color, string _title, string _description, float _duration = 4f)
         {
             if (showCoroutine != null)
             {
@@ -29,11 +28,11 @@ namespace UIScripts
             showCoroutine = ShowCoroutine(_color, _title, _description, _duration);
             StartCoroutine(showCoroutine);
         }
-        private IEnumerator ShowCoroutine(ColorType _color, string _title, string _description, float _duration)
+        private IEnumerator ShowCoroutine(Color32 _color, string _title, string _description, float _duration)
         {
-            titleText.SetText(_title);
-            descriptionText.SetText(_description);
-            colorImage.color = colors.GetColor(_color);
+            titleText.SetText(_title.ToUpper());
+            descriptionText.SetText(_description.ToUpper());
+            colorImage.color = _color;
             TransitionIn();
             yield return new WaitForSeconds(_duration);
             TransitionOut();

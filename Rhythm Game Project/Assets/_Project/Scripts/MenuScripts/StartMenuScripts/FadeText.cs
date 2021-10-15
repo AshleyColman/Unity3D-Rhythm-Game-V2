@@ -1,6 +1,7 @@
-namespace StartMenuScripts
+namespace UIScripts
 {
     using UnityEngine;
+    using UIScripts;
 
     public sealed class FadeText : EffectText
     {

@@ -1,4 +1,4 @@
-namespace StartMenuScripts
+namespace UIScripts
 {
     using StaticDataScripts;
     using TMPro;

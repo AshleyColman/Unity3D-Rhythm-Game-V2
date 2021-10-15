@@ -18,7 +18,7 @@ namespace AllMenuScripts
         private Vector3 startPosition;
 
         public void TransitionIn() => inputPanel.gameObject.SetActive(true);
-        public void SetInputText(string[] _controlTextArr, string[] _keyTextArr)
+        public void SetInputText (string[] _controlTextArr, string[] _keyTextArr)
         {
             inputPanel.gameObject.SetActive(false);
 

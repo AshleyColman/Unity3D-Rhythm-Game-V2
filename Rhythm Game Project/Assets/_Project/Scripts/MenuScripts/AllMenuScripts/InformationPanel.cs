@@ -10,8 +10,11 @@ namespace AllMenuScripts
     {
         private readonly string[] informationArr = new string[]
         {
-            "welcome",
-            "1"
+            "welcome to the game",
+            "Developed by Ashleyc97 2021",
+            "thank you for having a look :)",
+            "why not join the discord?",
+            "report bugs to Ashley#3286"
         };
         [SerializeField] private GameObject informationPanel = default;
         [SerializeField] private TextMeshProUGUI mainText = default;
@@ -22,6 +25,8 @@ namespace AllMenuScripts
         private Vector3 startPosition;
         private Transform mainTextTransform;
         private IEnumerator playInfoLoopCoroutine;
+
+        private void OnEnable() => PlayInfoLoop();
 
         public void PlayInfoLoop()
         {
@@ -67,5 +72,4 @@ namespace AllMenuScripts
         }
         private void PlayHideTween() => LeanTween.alphaCanvas(canvasGroup, 0f, 2f).setEaseOutExpo();
     }
-
 }

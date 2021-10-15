@@ -7,23 +7,12 @@ namespace UIScripts
 
     public sealed class ImageLoader : MonoBehaviour
     {
-        private const string ImageShaderLocation = "UI/Unlit/Transparent";
-        [SerializeField] private Material defaultMaterial = default;
-        private Shader imageShader;
+        [SerializeField] private MaterialLoader materialLoader = default;
 
         public void LoadCompressedImage(string _url, Image _image)
         {
             StartCoroutine(LoadCompressedImageCoroutine(_url, _image));
         }
-        public Material CreateMaterialForImage()
-        {
-            return new Material(imageShader);
-        }
-        private void Awake()
-        {
-            ReferenceImageShader();
-        }
-        private void ReferenceImageShader() => imageShader = Shader.Find(ImageShaderLocation);
         private IEnumerator LoadCompressedImageCoroutine(string _url, Image _image)
         {
             if (string.IsNullOrEmpty(_url))
@@ -62,9 +51,9 @@ namespace UIScripts
         }
         private void ApplyMaterial(Image _image, Texture2D _texture)
         {
-            _image.material = new Material(imageShader);
+            _image.material = materialLoader.GetNewMaterial();
             _image.material.mainTexture = _texture;
         }
-        private void SetToDefaultMaterial(Image _image) => _image.material = defaultMaterial;
+        private void SetToDefaultMaterial(Image _image) => _image.material = materialLoader.DefaultMaterial;
     }
 }

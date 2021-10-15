@@ -2,10 +2,11 @@
 {
     using System.Collections;
     using UnityEngine;
-    using UnityEngine.UI;
     using TimingScripts;
     using UIScripts;
+    using AllMenuScripts;
     using AccountScripts;
+    using ModeMenuScripts;
 
     public sealed class StartMenuManager : InputMenu
     {
@@ -14,15 +15,13 @@
         [SerializeField] private FadeText fadeText = default;
         [SerializeField] private TimeManager timeManager = default;
         [SerializeField] private FadeTransition fadeTransition = default;
-        [SerializeField] private BackgroundManager backgroundManager = default;
         [SerializeField] private TextTyper textTyper = default;
-        [SerializeField] private AccountMenu accountMenu = default;
+        [SerializeField] private MenuStack menuStack = default;
+        [SerializeField] private OptionMenu optionMenu = default;
+        [SerializeField] private ModeMenu modeMenu = default;
+        [SerializeField] private InformationPanel informationPanel = default;
         private IEnumerator startGameCoroutine;
         private bool gameStarted = false;
-
-        //private AccountPanel accountPanel;
-        //private DescriptionPanel descriptionPanel;
-        //private ControlPanel controlPanel;
 
         protected override IEnumerator TransitionInCoroutine()
         {
@@ -46,6 +45,7 @@
             fadeTransition.TransitionOut();
             yield return new WaitForSeconds(1f);
             screen.gameObject.SetActive(false);
+            modeMenu.TransitionIn();
             yield return null;
         }
         protected override IEnumerator CheckInputCoroutine()
@@ -56,7 +56,6 @@
                 yield return null;
             }
         }
-        private void Awake() => TransitionIn();
         private void CheckInputToStartGame()
         {
             if (gameStarted == false)
@@ -85,10 +84,9 @@
             textTyper.TypeTextCancelFalse("game started", titleText.TextArr);
             textTyper.TypeTextCancelFalse("welcome", fadeText.TextArr);
             yield return new WaitForSeconds(2f);
+            informationPanel.gameObject.SetActive(true);
             fadeText.PlayAlphaCanvasTweenLoop();
-            accountMenu.TransitionIn();
-            //descriptionPanel.TransitionIn();
-            //controlPanel.TransitionIn();
+            menuStack.TransitionToMenu(optionMenu);
         }
     }
 }

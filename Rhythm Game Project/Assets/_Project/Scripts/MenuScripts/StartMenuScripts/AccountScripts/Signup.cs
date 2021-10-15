@@ -1,5 +1,6 @@
 namespace AccountScripts
 {
+    using AllMenuScripts;
     using DatabaseScripts;
     using StartMenuScripts;
     using StaticDataScripts;
@@ -19,27 +20,25 @@ namespace AccountScripts
         [SerializeField] private Image passwordValidationMatchColorImage = default;
         [SerializeField] private Button submitButton = default;
         [SerializeField] private Database database = default;
-        [SerializeField] private TextPanel textPanel = default;
         [SerializeField] private TitleText titleText = default;
         [SerializeField] private FadeText fadeText = default;
         [SerializeField] private TextTyper textTyper = default;
-        [SerializeField] private Colors colors = default;
+        [SerializeField] private MenuStack menuStack = default;
         private bool isUsernameValid = false;
         private bool isPasswordValid = false;
         private bool isPasswordMatchValid = false;
-        private IEnumerator signupCoroutine;
-        private IEnumerator transitionInCoroutine;
+        public bool AccountCreated { get; private set; }
 
         public void ValidateUsernameInput()
         {
             if (usernameInputField.text.Length < 4)
             {
-                usernameValidationColorImage.color = colors.GetColor(ColorType.red);
+                usernameValidationColorImage.color = Colors.Red_80;
                 isUsernameValid = false;
             }
             else
             {
-                usernameValidationColorImage.color = colors.GetColor(ColorType.lightGreen);
+                usernameValidationColorImage.color = Colors.Green_80;
                 isUsernameValid = true;
             }
             CheckIfAllInputIsValid();
@@ -48,12 +47,12 @@ namespace AccountScripts
         {
             if (passwordInputField.text.Length < 4)
             {
-                passwordValidationColorImage.color = colors.GetColor(ColorType.red);
+                passwordValidationColorImage.color = Colors.Red_80;
                 isPasswordValid = false;
             }
             else
             {
-                passwordValidationColorImage.color = colors.GetColor(ColorType.lightGreen);
+                passwordValidationColorImage.color = Colors.Green_80;
                 isPasswordValid = true;
             }
             CheckIfAllInputIsValid();
@@ -62,17 +61,29 @@ namespace AccountScripts
         {
             if (passwordInputField.text == passwordMatchInputField.text && passwordMatchInputField.text != string.Empty)
             {
-                passwordValidationMatchColorImage.color = colors.GetColor(ColorType.lightGreen);
+                passwordValidationMatchColorImage.color = Colors.Green_80;
                 isPasswordMatchValid = true;
             }
             else
             {
-                passwordValidationMatchColorImage.color = colors.GetColor(ColorType.red);
+                passwordValidationMatchColorImage.color = Colors.Red_80;
                 isPasswordMatchValid = false;
             }
             CheckIfAllInputIsValid();
         }
-        public async void Submit_OnClick() => await database.InsertPlayerAsync(usernameInputField.text, passwordInputField.text);
+        public async void Submit_OnClick()
+        {
+            AccountCreated = await database.InsertPlayerAsync(usernameInputField.text, passwordInputField.text);
+            if (AccountCreated == true)
+            {
+                menuStack.TransitionMenuBack();
+            }
+            else
+            {
+                usernameInputField.text = string.Empty;
+                usernameInputField.Select();
+            }
+        }
         protected override IEnumerator TransitionInCoroutine()
         {
             screen.gameObject.SetActive(true);
