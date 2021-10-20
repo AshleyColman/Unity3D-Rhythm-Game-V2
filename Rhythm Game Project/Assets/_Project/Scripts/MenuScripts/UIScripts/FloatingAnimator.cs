@@ -11,7 +11,6 @@ namespace UIScripts
         {
             PlayFloatTweenLoop();
         }
-
         public void PlayFloatTweenLoop()
         {
             LeanTween.cancel(this.gameObject);

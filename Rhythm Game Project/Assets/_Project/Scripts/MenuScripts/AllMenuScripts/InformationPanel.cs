@@ -12,7 +12,6 @@ namespace AllMenuScripts
         {
             "welcome to the game",
             "Developed by Ashleyc97 2021",
-            "thank you for having a look :)",
             "why not join the discord?",
             "report bugs to Ashley#3286"
         };
@@ -25,9 +24,15 @@ namespace AllMenuScripts
         private Vector3 startPosition;
         private Transform mainTextTransform;
         private IEnumerator playInfoLoopCoroutine;
-
+        private IEnumerator playSingleInfoCoroutine;
         private void OnEnable() => PlayInfoLoop();
 
+        public void PlaySingleInfo(string _info, Color32 _color)
+        {
+            StopAllCoroutines();
+            playSingleInfoCoroutine = PlaySingleInfoCoroutine(_info, _color);
+            StartCoroutine(playSingleInfoCoroutine);
+        }
         public void PlayInfoLoop()
         {
             informationPanel.gameObject.SetActive(true);
@@ -61,6 +66,20 @@ namespace AllMenuScripts
             PlayInfoLoop();
             yield return null;
         }
+        private IEnumerator PlaySingleInfoCoroutine(string _info, Color32 _color)
+        {
+            informationPanel.gameObject.SetActive(true);
+            SetColor(_color);
+            flashEffect.PlayFlashTween();
+            mainText.SetText(_info);
+            PlayDisplayTween();
+            yield return new WaitForSeconds(6f);
+            PlayHideTween();
+            yield return new WaitForSeconds(2f);
+            PlayInfoLoop();
+            yield return null;
+        }
+
         private void PlayDisplayTween()
         {
             LeanTween.cancel(mainText.gameObject);
@@ -71,5 +90,6 @@ namespace AllMenuScripts
             LeanTween.moveLocalY(mainText.gameObject, endPosition.y, 1f).setEaseOutExpo();
         }
         private void PlayHideTween() => LeanTween.alphaCanvas(canvasGroup, 0f, 2f).setEaseOutExpo();
+        private void SetColor(Color32 _color) => colorImage.color = _color; 
     }
 }
