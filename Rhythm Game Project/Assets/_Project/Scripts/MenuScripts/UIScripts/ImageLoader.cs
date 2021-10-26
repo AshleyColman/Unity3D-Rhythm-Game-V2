@@ -1,6 +1,8 @@
 namespace UIScripts
 {
+    using StaticDataScripts;
     using System.Collections;
+    using System.IO;
     using UnityEngine;
     using UnityEngine.Networking;
     using UnityEngine.UI;
@@ -9,37 +11,42 @@ namespace UIScripts
     {
         [SerializeField] private MaterialLoader materialLoader = default;
 
-        public void LoadCompressedImage(string _url, Image _image)
+        public void LoadCompressedImage(ImageLoadType _imageLoadType, string _path, Image _image)
         {
-            StartCoroutine(LoadCompressedImageCoroutine(_url, _image));
+            StartCoroutine(LoadCompressedImageCoroutine(_imageLoadType, _path, _image));
         }
-        private IEnumerator LoadCompressedImageCoroutine(string _url, Image _image)
+        private IEnumerator LoadCompressedImageCoroutine(ImageLoadType _imageLoadType, string _path, Image _image)
         {
-            if (string.IsNullOrEmpty(_url))
+            if (_imageLoadType == ImageLoadType.File)
+            {
+                if (File.Exists(_path) == false)
+                {
+                    SetToDefaultMaterial(_image);
+                }
+            }
+
+            if (string.IsNullOrEmpty(_path))
             {
                 SetToDefaultMaterial(_image);
             }
             else
             {
-                using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_url))
-                {
-                    yield return uwr.SendWebRequest();
+                using UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(_path);
+                yield return uwr.SendWebRequest();
 
-                    if (uwr.result == UnityWebRequest.Result.ConnectionError ||
-                        uwr.result == UnityWebRequest.Result.DataProcessingError ||
-                        uwr.result == UnityWebRequest.Result.ProtocolError)
-                    {
-                        Debug.Log("Error loading image");
-                    }
-                    else
-                    {
-                        Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(uwr);
-                        SetPerformance(downloadedTexture);
-                        ApplyMaterial(_image, downloadedTexture);
-                    }
+                if (uwr.result == UnityWebRequest.Result.ConnectionError ||
+                    uwr.result == UnityWebRequest.Result.DataProcessingError ||
+                    uwr.result == UnityWebRequest.Result.ProtocolError)
+                {
+                    Debug.Log("Error loading image");
+                }
+                else
+                {
+                    Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(uwr);
+                    SetPerformance(downloadedTexture);
+                    ApplyMaterial(_image, downloadedTexture);
                 }
             }
-
             yield return null;
         }
         private void SetPerformance(Texture2D _texture)

@@ -1,5 +1,6 @@
 namespace UIScripts
 {
+    using StaticDataScripts;
     using UnityEngine;
 
     public static class Colors
@@ -17,5 +18,20 @@ namespace UIScripts
         public static Color32 Yellow = new Color32(242, 204, 16, 255);
         public static Color32 Pink = new Color32(189, 16, 242, 255);
         public static Color32 Purple = new Color32(125, 16, 242, 255);
+
+        public static Color32 GetModeColor(Mode _mode)
+        {
+            var color = _mode switch
+            {
+                Mode.One => Green,
+                Mode.Two => LightBlue,
+                Mode.Three => DarkBlue,
+                Mode.Four => Purple,
+                Mode.Five => Pink,
+                Mode.Six => Orange,
+                _ => Black
+            };
+            return color;
+        }
     }
 }
