@@ -38,7 +38,7 @@ namespace UIScripts
                     uwr.result == UnityWebRequest.Result.DataProcessingError ||
                     uwr.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    Debug.Log("Error loading image");
+                    //Debug.Log("Error loading image");
                 }
                 else
                 {

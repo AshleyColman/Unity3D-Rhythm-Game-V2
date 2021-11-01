@@ -311,7 +311,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0, g: 0, b: 0, a: 0.54509807}
     m_HighlightedColor: {r: 0.4331028, g: 0.9490196, b: 0.06274507, a: 0.2509804}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 0.43137255, g: 0.9490196, b: 0.0627451, a: 0.2509804}
     m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -344,13 +344,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 2089705597013163075}
-  numberText: {fileID: 2089705597108268055}
-  titleText: {fileID: 2089705597559274405}
-  artistText: {fileID: 2089705597320838705}
-  creatorText: {fileID: 2802084509940991476}
-  dateText: {fileID: 7126761203408182065}
-  modeText: {fileID: 4383505272258435676}
   modeImage: {fileID: 4383505272354898781}
+  <NumberText>k__BackingField: {fileID: 2089705597108268055}
+  <TitleText>k__BackingField: {fileID: 2089705597559274405}
+  <ArtistText>k__BackingField: {fileID: 2089705597320838705}
+  <CreatorText>k__BackingField: {fileID: 2802084509940991476}
+  <DateText>k__BackingField: {fileID: 7126761203408182065}
+  <ModeText>k__BackingField: {fileID: 4383505272258435676}
   <BeatmapImage>k__BackingField: {fileID: 2089705596911190018}
 --- !u!1 &2089705597108268057
 GameObject:
