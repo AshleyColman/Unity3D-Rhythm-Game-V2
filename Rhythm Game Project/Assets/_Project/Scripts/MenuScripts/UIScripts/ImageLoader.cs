@@ -1,6 +1,7 @@
 namespace UIScripts
 {
     using StaticDataScripts;
+    using System;
     using System.Collections;
     using System.IO;
     using UnityEngine;
@@ -11,11 +12,12 @@ namespace UIScripts
     {
         [SerializeField] private MaterialLoader materialLoader = default;
 
-        public void LoadCompressedImage(ImageLoadType _imageLoadType, string _path, Image _image)
+        public void LoadCompressedImage(ImageLoadType _imageLoadType, string _path, Image _image, Action _action = null)
         {
-            StartCoroutine(LoadCompressedImageCoroutine(_imageLoadType, _path, _image));
+            StartCoroutine(LoadCompressedImageCoroutine(_imageLoadType, _path, _image, _action));
         }
-        private IEnumerator LoadCompressedImageCoroutine(ImageLoadType _imageLoadType, string _path, Image _image)
+        private IEnumerator LoadCompressedImageCoroutine(ImageLoadType _imageLoadType, string _path, Image _image, 
+            Action _action = null)
         {
             if (_imageLoadType == ImageLoadType.File)
             {
@@ -46,6 +48,11 @@ namespace UIScripts
                     SetPerformance(downloadedTexture);
                     ApplyMaterial(_image, downloadedTexture);
                 }
+            }
+
+            if (_action != null)
+            {
+                _action();
             }
             yield return null;
         }

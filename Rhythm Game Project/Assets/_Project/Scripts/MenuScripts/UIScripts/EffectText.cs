@@ -12,7 +12,6 @@ namespace UIScripts
         private Transform effectTextTransform;
 
         public TextMeshProUGUI[] TextArr { get => new TextMeshProUGUI[] { mainText, effectText }; }
-
         public void PlaySetEasePunchTween()
         {
             CancelTween();
@@ -20,28 +19,33 @@ namespace UIScripts
             LeanTween.scale(mainText.gameObject, VectorValues.Vector1_25, 1f).setEasePunch();
             LeanTween.scale(effectText.gameObject, VectorValues.Vector1_75, 1f).setEasePunch();
         }
-
         public void SetText(string _text)
         {
-            mainText.SetText(_text); effectText.SetText(_text);
+            mainText.SetText(_text); 
+            effectText.SetText(_text);
         }
-
+        public void SetColorGradient(TMP_ColorGradient _colorGradient)
+        {
+            mainText.colorGradientPreset = _colorGradient;
+            effectText.colorGradientPreset = _colorGradient;
+        }
         private void Awake()
         {
             mainTextTransform = mainText.transform;
             effectTextTransform = effectText.transform;
         }
-
         private void CancelTween()
         {
             LeanTween.cancel(mainText.gameObject);
             LeanTween.cancel(effectText.gameObject);
         }
-
         private void SetLocalScale()
         {
-            mainTextTransform.localScale = Vector3.one;
-            effectTextTransform.localScale = Vector3.one;
+            if (mainTextTransform != null && effectTextTransform != null)
+            {
+                mainTextTransform.localScale = Vector3.one;
+                effectTextTransform.localScale = Vector3.one;
+            }
         }
     }
 }

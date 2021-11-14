@@ -13,10 +13,6 @@ namespace UIScripts
         [SerializeField] private GameObject textContainer = default;
         private IEnumerator showCoroutine;
 
-        private void Start()
-        {
-            Activate();
-        }
         public void Activate()
         {
             if (showCoroutine != null)
