@@ -17,7 +17,6 @@ namespace BeatmapMenuScripts
         [SerializeField] private Database database = default;
         [SerializeField] private RankData rankData = default;
         [SerializeField] private ScrollRect scrollRect = default;
-        [SerializeField] private EffectText titleText = default;
         [SerializeField] private LoadingIcon loadingIcon = default;
         [SerializeField] private ImageLoader imageLoader = default;
         private IEnumerator requestLeaderboardCoroutine;
@@ -67,14 +66,11 @@ namespace BeatmapMenuScripts
         {
             scrollRect.content.gameObject.SetActive(false);
             loadingIcon.Activate();
-            titleText.gameObject.SetActive(false);
         }
         private void Activate()
         {
             scrollRect.content.gameObject.SetActive(true);
             loadingIcon.Deactivate();
-            titleText.gameObject.SetActive(true);
-            titleText.PlaySetEasePunchTween();
             PlayFlashLoopTween();
         }
         private void IncrementImageCounter()
