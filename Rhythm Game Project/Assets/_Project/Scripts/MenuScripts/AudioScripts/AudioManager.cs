@@ -1,17 +1,22 @@
 namespace AudioScripts
 {
     using StaticDataScripts;
+    using System;
     using System.Collections;
     using UnityEngine;
     using UnityEngine.Networking;
 
     public class AudioManager : MonoBehaviour
     {
-        [field: SerializeField] public AudioSource AudioSource { get; private set; }
+        [field: SerializeField] public AudioSource SongAudioSource { get; private set; }
+
         private IEnumerator loadAudioCoroutine;
 
-        public void PlayScheduledAudio(double _playTime) => AudioSource.PlayScheduled(AudioSettings.dspTime + _playTime);
-        public void SetAudioTime(float _time) => AudioSource.time = _time;
+        public double SongAudioSourceTime { get { return SongAudioSource.time; } }
+        public double SongAudioClipLength { get { return SongAudioSource.clip.length; } }
+
+        public void PlayAudio(double _time) => SongAudioSource.PlayScheduled(AudioSettings.dspTime + _time);
+        public void SetAudioTime(float _time) => SongAudioSource.time = _time;
         public void LoadAudio(string _beatmapFolderPath, float _audioStartTime)
         {
             if (loadAudioCoroutine != null)
@@ -24,7 +29,7 @@ namespace AudioScripts
         }
         private IEnumerator LoadAudioCoroutine(string _path, float _playTime = 0f)
         {
-            AudioSource.gameObject.SetActive(false);
+            SongAudioSource.gameObject.SetActive(false);
             UnloadAudioClip();
 
             if (string.IsNullOrEmpty(_path) == false)
@@ -43,18 +48,18 @@ namespace AudioScripts
                     }
                     else
                     {
-                        AudioSource.clip = DownloadHandlerAudioClip.GetContent(uwr);
+                        SongAudioSource.clip = DownloadHandlerAudioClip.GetContent(uwr);
                     }
                 }
             }
-            AudioSource.gameObject.SetActive(false);
+            SongAudioSource.gameObject.SetActive(false);
             yield return null;
         }
         private void UnloadAudioClip() 
         {
-            if (AudioSource.clip != null)
+            if (SongAudioSource.clip != null)
             {
-                AudioSource.clip.UnloadAudioData();
+                SongAudioSource.clip.UnloadAudioData();
             }
         }
     }

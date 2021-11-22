@@ -1,15 +1,16 @@
 using StaticDataScripts;
 using System;
+using UnityEngine;
 
 [Serializable]
 public sealed class Beatmap
 {
+    public int Id { get; set; }
     public int ObjectCount { get; set; }
-    public float[] PositionArrX { get; set; }
-    public float[] PositionArrY { get; set; }
+    public Vector2[] PositionArr { get; set; }
     public float BeatsPerMinute { get; set; }
     public float AudioStartTime { get; set; }
-    public double[] SpawnTimeArr { get; set; }
+    public double[] TimeArr { get; set; }
     public double OffsetMilliseconds { get; set; }
     public string FolderName { get; set; }
     public string Title { get; set; }

@@ -41,7 +41,7 @@
         {
             if (currentTick < tickTimeArr.Length)
             {
-                if (audioManager.AudioSource.time >= tickTimeArr[currentTick])
+                if (audioManager.SongAudioSource.time >= tickTimeArr[currentTick])
                 {
                     OnTick();
                     CheckIfMeasure();
@@ -61,7 +61,7 @@
         {
             for (ushort i = 0; i < tickTimeArr.Length; i++)
             {
-                if (audioManager.AudioSource.time <= tickTimeArr[i])
+                if (audioManager.SongAudioSource.time <= tickTimeArr[i])
                 {
                     currentMeasure = (ushort)(i / 4);
                     currentTick = i;
@@ -85,7 +85,7 @@
         }
         private void CalculateIntervals()
         {
-            if (audioManager.AudioSource.clip != null)
+            if (audioManager.SongAudioSource.clip != null)
             {
                 int i = 0;
                 int multiplier = (Base / Step);
@@ -93,7 +93,7 @@
                 interval = (tmpInterval / multiplier);
                 var tickTimeList = new List<double>();
 
-                while (interval * i <= audioManager.AudioSource.clip.length)
+                while (interval * i <= audioManager.SongAudioSource.clip.length)
                 {
                     tickTimeList.Add((interval * i) + (offsetMilliseconds / 1000f));
                     i++;
