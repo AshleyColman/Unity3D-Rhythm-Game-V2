@@ -15422,8 +15422,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatmapController: {fileID: 1657295289}
+  audioManager: {fileID: 326332093}
+  hitObjectController: {fileID: 737455617}
   spawn: {fileID: 964638260}
   prefab: {fileID: 3073449325108214677, guid: b71ed98c59eace240a33e1457c9f8ebe, type: 3}
+  pool: []
+  <SpawnedList>k__BackingField: []
+  <AllSpawned>k__BackingField: 0
+  <HitObjectIndex>k__BackingField: 0
 --- !u!1 &439622642
 GameObject:
   m_ObjectHideFlags: 0
@@ -20871,6 +20877,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 734805707}
   m_CullTransparentMesh: 0
+--- !u!1 &737455615
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 737455616}
+  - component: {fileID: 737455617}
+  m_Layer: 0
+  m_Name: HitObjectController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &737455616
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737455615}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1136791485}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &737455617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737455615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758bb7385451cac4495a4184e00bcaec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beatmapController: {fileID: 1657295289}
+  spawnManager: {fileID: 434494280}
+  audioManager: {fileID: 326332093}
+  currentObject: {fileID: 0}
+  currentObjectIndex: 0
 --- !u!1 &740443159
 GameObject:
   m_ObjectHideFlags: 0
@@ -34518,6 +34572,7 @@ Transform:
   - {fileID: 434494279}
   - {fileID: 1388853528}
   - {fileID: 459326126}
+  - {fileID: 737455616}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -35207,7 +35262,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileManager: {fileID: 921993972}
-  osuMapFile: {fileID: 102900000, guid: acab4b4238e50994fa8d532e066070d8, type: 3}
+  osuMapFile: {fileID: 102900000, guid: 270530e391b6a034284a5b34a007a3d0, type: 3}
+  camera: {fileID: 1687258584}
 --- !u!1 &1184604607
 GameObject:
   m_ObjectHideFlags: 0
@@ -48685,6 +48741,7 @@ MonoBehaviour:
   metronome: {fileID: 2091831613}
   inputManager: {fileID: 1388853529}
   countdown: {fileID: 459326127}
+  hitObjectController: {fileID: 737455617}
 --- !u!4 &1657295290
 Transform:
   m_ObjectHideFlags: 0
@@ -62224,7 +62281,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: ef92a63c6ac4f59438d2f96f143753d3, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 261adaf2e11195247a685ffa28cd2aed, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -62750,6 +62807,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PromptText
+      objectReference: {fileID: 0}
+    - target: {fileID: 497832213372061620, guid: e358472e8f6beee40bc0ac4bfbd49b32,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 497832213372061623, guid: e358472e8f6beee40bc0ac4bfbd49b32,
         type: 3}

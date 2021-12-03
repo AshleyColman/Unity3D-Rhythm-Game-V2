@@ -39,7 +39,7 @@ namespace FileScripts
         private void SetBeatmapDirectoryPath() => BeatmapDirectoryPath = $"{Application.persistentDataPath}/Beatmaps";
         private void SetBeatmapDirectories() => BeatmapDirectoryArr = Directory.GetDirectories(BeatmapDirectoryPath);
         private void CreateBeatmap(int _objectCount, Vector2[] _positionArr, float _beatsPerMinute,
-            float _audioStartTime, double[] _timeArr, double _offsetMilliseconds, string _title, string _artist,
+            float _audioStartTime, double[] _timeArr, double[] _spawnTimeArr, double _offsetMilliseconds, string _title, string _artist,
             string _creator, string _table, string _modeName, string _difficulty, string _folderName, Mode _mode, ApproachRate _approachRate, ObjectSize _objectSize,
             DateTime _createdDate)
         {
@@ -52,7 +52,8 @@ namespace FileScripts
             beatmap.PositionArr = _positionArr;
             beatmap.BeatsPerMinute = _beatsPerMinute;
             beatmap.AudioStartTime = _audioStartTime;
-            beatmap.TimeArr = _timeArr;
+            beatmap.HitTimeArr = _timeArr;
+            beatmap.SpawnTimeArr = _spawnTimeArr;
             beatmap.OffsetMilliseconds = _offsetMilliseconds;
             beatmap.Title = _title;
             beatmap.Artist = _artist;

@@ -18,9 +18,9 @@
         private IEnumerator playHitTweenCoroutine;
         private IEnumerator playMissTweenCoroutine;
         private Vector3 missRotateTo = Vector3.zero;
-        private Quaternion startingRotation = Quaternion.identity;
-
-        public float ApproachTime { get; set; }
+        private Quaternion startingRotation;
+        private bool setStartingRotation = false;
+        private float approachTime = 0;
         public void PlayHitTween()
         {
             if (playHitTweenCoroutine != null)
@@ -39,29 +39,38 @@
             playMissTweenCoroutine = PlayMissTweenCoroutine();
             StartCoroutine(playMissTweenCoroutine);
         }
-        public void SetObjectProperties(Vector3 _position, Color32 _color, string _numberText)
+        public void SetObjectProperties(float _approachTime, Vector3 _position, Color32 _color, string _numberText)
         {
             cTransform.SetAsFirstSibling();
             cTransform.localPosition = _position;
             colorImage.color = _color;
             numberText.SetText(_numberText);
-            
+            approachTime = _approachTime;
         }
         private void SetMissRotation() => missRotateTo = new Vector3(cTransform.localRotation.x, cTransform.localRotation.y,
                 cTransform.localRotation.z - 45f);
+        private void SetStartingRotation()
+        {
+            if (setStartingRotation == false)
+            {
+                startingRotation = cTransform.localRotation;
+                setStartingRotation = true;
+            }
+        }
         private void ResetProperties()
         {
-            objectProperties.gameObject.SetActive(true);
+            SetStartingRotation();
             cTransform.localScale = Vector3.zero;
             approachImage.transform.localScale = Vector3.zero;
             cTransform.localRotation = startingRotation;
             canvasGroup.alpha = 0f;
+            objectProperties.gameObject.SetActive(true);
         }
         private void PlayApproachTween()
         {
             LeanTween.scale(cTransform.gameObject, Vector3.one, 0.25f).setEaseOutExpo();
-            LeanTween.scale(approachImage.gameObject, Vector3.one, ApproachTime);
-            LeanTween.alphaCanvas(canvasGroup, 1f, ApproachTime);
+            LeanTween.scale(approachImage.gameObject, Vector3.one, approachTime);
+            LeanTween.alphaCanvas(canvasGroup, 1f, approachTime);
         }
         private void CancelTween()
         {
@@ -81,6 +90,7 @@
             yield return new WaitForSeconds(0.25f);
             judgementObject.Deactivate();
             gameObject.SetActive(false);
+            Debug.Log("hit");
             yield return null;
         }
         private IEnumerator PlayMissTweenCoroutine()

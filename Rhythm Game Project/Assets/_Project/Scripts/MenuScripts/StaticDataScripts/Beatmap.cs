@@ -10,7 +10,8 @@ public sealed class Beatmap
     public Vector2[] PositionArr { get; set; }
     public float BeatsPerMinute { get; set; }
     public float AudioStartTime { get; set; }
-    public double[] TimeArr { get; set; }
+    public double[] HitTimeArr { get; set; }
+    public double[] SpawnTimeArr { get; set; }
     public double OffsetMilliseconds { get; set; }
     public string FolderName { get; set; }
     public string Title { get; set; }

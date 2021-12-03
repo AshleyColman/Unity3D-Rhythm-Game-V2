@@ -12,6 +12,7 @@ namespace GameplayScripts
         [SerializeField] private Metronome metronome = default;
         [SerializeField] private InputManager inputManager = default;
         [SerializeField] private Countdown countdown = default;
+        [SerializeField] private HitObjectController hitObjectController = default;
         private IEnumerator initializeStartCoroutine;
         public Beatmap Beatmap { get; private set; }
         public bool IsRunning { get; private set; }
@@ -44,6 +45,8 @@ namespace GameplayScripts
         private void Run()
         {
             IsRunning = true;
+            spawnManager.LoopSpawnFromPool();
+            hitObjectController.TrackObjects();
         }
         private void Start()
         {

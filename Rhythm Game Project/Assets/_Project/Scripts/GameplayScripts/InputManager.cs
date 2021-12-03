@@ -30,6 +30,7 @@ namespace GameplayScripts
                 {
                     beatmapController.InitializeStart();
                 }
+                yield return null;
             }
             yield return null;
         }

@@ -476,6 +476,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 5380417660696318676}
   cTransform: {fileID: 3073449326271318535}
   judgementObject: {fileID: 407835424710952757}
+  <ApproachTime>k__BackingField: 0
 --- !u!1 &3073449325183866963
 GameObject:
   m_ObjectHideFlags: 0

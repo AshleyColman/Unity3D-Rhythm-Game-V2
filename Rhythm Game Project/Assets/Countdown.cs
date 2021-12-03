@@ -26,9 +26,11 @@ namespace GameplayScripts
             for (int i = _seconds; i > 0; i--)
             {
                 text.SetText($"{i}");
+                text.PlaySetEasePunchTween();
                 yield return wait;
             }
             text.SetText("GO");
+            text.PlaySetEasePunchTween();
             yield return wait;
             text.gameObject.SetActive(false);
             yield return null;
