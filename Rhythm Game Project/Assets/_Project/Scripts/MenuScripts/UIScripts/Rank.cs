@@ -8,5 +8,6 @@ namespace UIScripts
         [field: SerializeField] public TMP_ColorGradient ColorGradient { get; private set; }
         [field: SerializeField] public string Text { get; private set; }
         [field: SerializeField] public StaticDataScripts.Rank RankEnum { get; private set; }
+        [field: SerializeField] public float ValueToAchieve { get; private set; }
     }
 }

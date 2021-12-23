@@ -8,6 +8,7 @@ namespace AudioScripts
 
     public class AudioManager : MonoBehaviour
     {
+        [SerializeField] private AudioReverbFilter filter = default;
         [field: SerializeField] public AudioSource SongAudioSource { get; private set; }
 
         private IEnumerator loadAudioCoroutine;
@@ -15,6 +16,8 @@ namespace AudioScripts
         public double SongAudioSourceTime { get { return SongAudioSource.time; } }
         public double SongAudioClipLength { get { return SongAudioSource.clip.length; } }
 
+        public void EnableReverbFilter() => filter.enabled = true;
+        public void DisableReverbFilter() => filter.enabled = false;
         public void PlayAudio(double _time) => SongAudioSource.PlayScheduled(AudioSettings.dspTime + _time);
         public void SetAudioTime(float _time) => SongAudioSource.time = _time;
         public void LoadAudio(string _beatmapFolderPath, float _audioStartTime)
@@ -62,5 +65,6 @@ namespace AudioScripts
                 SongAudioSource.clip.UnloadAudioData();
             }
         }
+
     }
 }

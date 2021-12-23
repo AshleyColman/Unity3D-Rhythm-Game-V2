@@ -30,5 +30,36 @@ namespace UIScripts
             };
             return rank;
         }
+        public Rank GetRank(float _accuracy)
+        {
+            if (_accuracy == rankS.ValueToAchieve)
+            {
+                return rankS;
+            }
+            else if (_accuracy < rankS.ValueToAchieve && _accuracy >= rankA.ValueToAchieve)
+            {
+                return rankA;
+            }
+            else if (_accuracy < rankA.ValueToAchieve && _accuracy >= rankB.ValueToAchieve)
+            {
+                return rankB;
+            }
+            else if (_accuracy < rankB.ValueToAchieve && _accuracy >= rankC.ValueToAchieve)
+            {
+                return rankC;
+            }
+            else if (_accuracy < rankC.ValueToAchieve && _accuracy >= rankD.ValueToAchieve)
+            {
+                return rankD;
+            }
+            else if (_accuracy < rankD.ValueToAchieve && _accuracy >= rankE.ValueToAchieve)
+            {
+                return rankE;
+            }
+            else
+            {
+                return rankF;
+            }
+        }
     }
 }

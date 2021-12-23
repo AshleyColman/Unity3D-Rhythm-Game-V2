@@ -90,7 +90,6 @@
             yield return new WaitForSeconds(0.25f);
             judgementObject.Deactivate();
             gameObject.SetActive(false);
-            Debug.Log("hit");
             yield return null;
         }
         private IEnumerator PlayMissTweenCoroutine()

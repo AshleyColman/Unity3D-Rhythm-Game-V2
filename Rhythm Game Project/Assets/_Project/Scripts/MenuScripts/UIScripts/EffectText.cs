@@ -10,6 +10,7 @@ namespace UIScripts
         [SerializeField] private TextMeshProUGUI effectText = default;
         private Transform mainTextTransform;
         private Transform effectTextTransform;
+        private float effectTextOpacity;
 
         public TextMeshProUGUI[] TextArr { get => new TextMeshProUGUI[] { mainText, effectText }; }
         public void PlaySetEasePunchTween()
@@ -29,10 +30,17 @@ namespace UIScripts
             mainText.colorGradientPreset = _colorGradient;
             effectText.colorGradientPreset = _colorGradient;
         }
+        public void SetColor(Color _color)
+        {
+            mainText.color = _color;
+            _color.a = effectTextOpacity;
+            effectText.color = _color;
+        }
         private void Awake()
         {
             mainTextTransform = mainText.transform;
             effectTextTransform = effectText.transform;
+            effectTextOpacity = effectText.color.a;
         }
         private void CancelTween()
         {

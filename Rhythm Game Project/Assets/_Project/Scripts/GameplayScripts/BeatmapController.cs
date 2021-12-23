@@ -13,6 +13,9 @@ namespace GameplayScripts
         [SerializeField] private InputManager inputManager = default;
         [SerializeField] private Countdown countdown = default;
         [SerializeField] private HitObjectController hitObjectController = default;
+        [SerializeField] private HitObjectFollower hitObjectFollower = default;
+        [SerializeField] private AccuracyManager accuracyManager = default;
+        [SerializeField] private ScoreManager scoreManager = default;
         private IEnumerator initializeStartCoroutine;
         public Beatmap Beatmap { get; private set; }
         public bool IsRunning { get; private set; }
@@ -22,6 +25,7 @@ namespace GameplayScripts
             Beatmap = loader.LoadOsuFile();
             spawnManager.InstantiateHitObjectPool();
             metronome.SetTiming(Beatmap.BeatsPerMinute, Beatmap.OffsetMilliseconds);
+            scoreManager.Initialize(Beatmap.ObjectCount);
             inputManager.CheckToRunGameplay();
         }
         public void InitializeStart(double _delay = 3)
@@ -47,6 +51,8 @@ namespace GameplayScripts
             IsRunning = true;
             spawnManager.LoopSpawnFromPool();
             hitObjectController.TrackObjects();
+            hitObjectFollower.EnableMoveToPosition();
+            accuracyManager.TrackIncreasingAccuracy();
         }
         private void Start()
         {

@@ -8,13 +8,13 @@
     {
         private const float TargetTime = 0.25f;
         [SerializeField] private BeatmapController beatmapController = default;
+        [SerializeField] private HitObjectController hitObjectController = default;
         private Transform followerTransform;
         private float timer = 0f;
         private IEnumerator moveToPositionCoroutine;
-        //private HitObjectManager hitobjectManager;
 
-        public void ResetTimer() => timer = 0;
-        public void TrackMoveToPosition()
+        public void MoveToNextObject() => ResetTimer();
+        public void EnableMoveToPosition()
         {
             if (moveToPositionCoroutine != null)
             {
@@ -29,18 +29,19 @@
             followerTransform.localScale = Vector3.one;
             LeanTween.scale(gameObject, VectorValues.Vector1_25, 0.1f).setLoopPingPong(1);
         }
+        private void ResetTimer() => timer = 0;
         private void Awake() => followerTransform = gameObject.transform;
         private IEnumerator MoveToPositionCoroutine()
         {
             while (beatmapController.IsRunning == true)
             {
-                //if (hitobjectManager.CurrentHittableObject != null && 
-                //    hitobjectManager.CurrentHittableObject.gameObject.activeSelf == true)
-                //{
-                //    timer += Time.deltaTime / TargetTime;
-                //    followerTransform.localPosition = Vector3.Lerp(followerTransform.localPosition,
-                //      hitobjectManager.CurrentHittableObject.CachedTransform.localPosition, timer);
-                //}
+                if (hitObjectController.CurrentObject != null &&
+                    hitObjectController.CurrentObject.gameObject.activeSelf == true)
+                {
+                    timer += Time.deltaTime / TargetTime;
+                    followerTransform.localPosition = Vector3.Lerp(followerTransform.localPosition,
+                      hitObjectController.CurrentObject.transform.localPosition, timer);
+                }
                 yield return null;
             }
             yield return null;

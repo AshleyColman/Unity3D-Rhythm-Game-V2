@@ -172,7 +172,6 @@ public sealed class Metronome : MonoBehaviour
     private IEnumerator OnTick()
     {
         PlayMetronome();
-        Debug.Log("tick");
         yield return null;
     }
     private void OnAudioFilterRead(float[] _data, int _channels)

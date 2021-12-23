@@ -6,12 +6,14 @@ namespace GameplayScripts
     public sealed class InputManager : MonoBehaviour
     {
         [SerializeField] private BeatmapController beatmapController = default;
+        [SerializeField] private FeverManager feverManager = default;
         [SerializeField] private Key[] keyArr = default;
         private IEnumerator checkToRunGameplayCoroutine;
 
         private void Update()
         {
             CheckKeyUI();
+            CheckFeverKey();
         }
         public void CheckToRunGameplay()
         {
@@ -63,6 +65,16 @@ namespace GameplayScripts
                 if (Input.GetKeyUp(key.KeyCode))
                 {
                     key.PlayOnKeyReleaseAnimation();
+                }
+            }
+        }
+        private void CheckFeverKey()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (feverManager.CanActivate == true)
+                {
+                    feverManager.Activate();
                 }
             }
         }

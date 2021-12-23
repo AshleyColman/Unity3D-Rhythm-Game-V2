@@ -19,7 +19,6 @@ public class BeatmapLoader : MonoBehaviour
     public Beatmap LoadOsuFile()
     {
         var reader = new StreamReader(AssetDatabase.GetAssetPath(osuMapFile));
-        ReadUntilHitObjectLine(reader);
         return ReadOsuFile();
     }
     private void ReadUntilHitObjectLine(StreamReader _reader)
@@ -82,7 +81,7 @@ public class BeatmapLoader : MonoBehaviour
             string[] lineParamsArray;
             lineParamsArray = line.Split(',');
             int FlipY = 384 - int.Parse(lineParamsArray[1]);
-            int AdjustedX = Mathf.RoundToInt(Screen.height * 1.333333f);
+            int AdjustedX = Mathf.RoundToInt(Screen.height * 2);
             float Slices = 8f;
             float PaddingX = AdjustedX / Slices;
             float PaddingY = Screen.height / Slices;
@@ -118,7 +117,8 @@ public class BeatmapLoader : MonoBehaviour
             HitTimeArr = hitTimeList.ToArray(),
             SpawnTimeArr = spawnTimeList.ToArray(),
             BeatsPerMinute = 120f,
-            OffsetMilliseconds = 0
+            OffsetMilliseconds = 0,
+            ApproachRate = ApproachRate.Normal
         };
         return beatmap;
     }

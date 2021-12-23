@@ -9,7 +9,13 @@ namespace GameplayScripts
         [SerializeField] private BeatmapController beatmapController = default;
         [SerializeField] private SpawnManager spawnManager = default;
         [SerializeField] private AudioManager audioManager = default;
-        [SerializeField] private HitObject currentObject;
+        [SerializeField] private SoundEffectManager soundEffectManager = default;
+        [SerializeField] private ScoreManager scoreManager = default;
+        [SerializeField] private MultiplierManager multiplierManager = default;
+        [SerializeField] private ComboManager comboManager = default;
+        [SerializeField] private HitObjectFollower hitObjectFollower = default;
+        [SerializeField] private FeverManager feverManager = default;
+        [SerializeField] private AccuracyManager accuracyManager = default;
         private double windowMilliseconds = 0.050;
         private double missTime = 0;
         private double okayLateStartTime = 0;
@@ -20,15 +26,17 @@ namespace GameplayScripts
         [SerializeField] private int currentObjectIndex = 0;
         private IEnumerator trackHitobjects;
 
+        public HitObject CurrentObject { get; private set; }
+
         public void SetCurrentObject()
         {
             if (spawnManager.AllSpawned == false)
             {
-                if (currentObject is null)
+                if (CurrentObject is null)
                 {
                     if (spawnManager.HitObjectIndex > currentObjectIndex)
                     {
-                        currentObject = spawnManager.SpawnedList[currentObjectIndex];
+                        CurrentObject = spawnManager.SpawnedList[currentObjectIndex];
                         SetJudgements();
                     }
                 }
@@ -36,10 +44,9 @@ namespace GameplayScripts
         }
         public void SetFirstCurrentObject()
         {
-            currentObject = spawnManager.SpawnedList[currentObjectIndex];
+            CurrentObject = spawnManager.SpawnedList[currentObjectIndex];
             SetJudgements();
         }
-
         public void TrackObjects()
         {
             if (trackHitobjects != null)
@@ -51,12 +58,12 @@ namespace GameplayScripts
         }
         public void CheckHit()
         {
-            if (currentObject != null)
+            if (CurrentObject != null)
             {
                 if (audioManager.SongAudioSourceTime >= okayEarlyStartTime &&
                     audioManager.SongAudioSourceTime < missTime)
                 {
-                    HasHit();
+                    HasHit(JudgementData.PerfectScore);
                 }
             }
         }
@@ -64,7 +71,7 @@ namespace GameplayScripts
         {
             while (beatmapController.IsRunning == true)
             {
-                if (currentObject != null)
+                if (CurrentObject != null)
                 {
                     if (Input.anyKey)
                     {
@@ -83,7 +90,7 @@ namespace GameplayScripts
         {
             if (audioManager.SongAudioSourceTime >= (perfectStartTime + windowMilliseconds))
             {
-                HasHit();
+                HasHit(JudgementData.PerfectScore);
             }
         }
         private void IncrementCurrentObjectIndex() => currentObjectIndex++;
@@ -91,19 +98,24 @@ namespace GameplayScripts
         {
             double hitTime = beatmapController.Beatmap.HitTimeArr[currentObjectIndex];
             missTime = hitTime + (windowMilliseconds * 5);
-            Debug.Log(missTime);
             okayLateStartTime = hitTime + (windowMilliseconds * 3);
             greatLateStartTime = hitTime + windowMilliseconds;
             perfectStartTime = hitTime - windowMilliseconds;
             greatEarlyStartTime = hitTime - (windowMilliseconds * 3);
             okayEarlyStartTime = hitTime - (windowMilliseconds * 5);
         }
-        private void HasHit()
+        private void HasHit(int _judgementScore)
         {
-            currentObject.PlayHitTween();
+            soundEffectManager.PlayHitEffect();
+            scoreManager.IncreaseScore(_judgementScore);
+            comboManager.IncreaseCombo();
+            accuracyManager.UpdateAccuracy();
+            feverManager.OnHit();
+            CurrentObject.PlayHitTween();
             SetCurrentObjectNull();
             IncrementCurrentObjectIndex();
             SetCurrentObject();
+            hitObjectFollower.MoveToNextObject();
         }
         private void CheckMiss()
         {
@@ -114,12 +126,15 @@ namespace GameplayScripts
         }
         private void HasMissed()
         {
-            currentObject.PlayMissTween();
+            soundEffectManager.PlayMissEffect();
+            comboManager.ResetCombo();
+            CurrentObject.PlayMissTween();
             SetCurrentObjectNull();
             IncrementCurrentObjectIndex();
             SetCurrentObject();
+            hitObjectFollower.MoveToNextObject();
         }
-        private void DeactivateCurrentObject() => currentObject.gameObject.SetActive(false);
-        private void SetCurrentObjectNull() => currentObject = null;
+        private void DeactivateCurrentObject() => CurrentObject.gameObject.SetActive(false);
+        private void SetCurrentObjectNull() => CurrentObject = null;
     }
 }
