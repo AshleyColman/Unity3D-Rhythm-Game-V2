@@ -6,15 +6,19 @@ namespace GameplayScripts
     public sealed class SoundEffectManager : MonoBehaviour
     {
         [SerializeField] private AudioSource[] audioSourceArr = default;
-        [SerializeField] private AudioClip hitClip = default;
-        [SerializeField] private AudioClip missClip = default;
+
+        [field: SerializeField] public AudioClip hitClip { get; private set; }
+        [field: SerializeField] public AudioClip missClip { get; private set; }
+        [field: SerializeField] public AudioClip bassClip { get; private set; }
+        [field: SerializeField] public AudioClip select1Clip { get; private set; }
+        [field: SerializeField] public AudioClip select2Clip { get; private set; }
+
+
         private int sourceArrIndex = 0;
-        public void PlayHitEffect() => PlayEffect(() => audioSourceArr[sourceArrIndex].PlayOneShot(hitClip));
-        public void PlayMissEffect() => PlayEffect(() => audioSourceArr[sourceArrIndex].PlayOneShot(missClip));
-        private void PlayEffect(Action _action)
+        public void PlayEffect(AudioClip _clip)
         {
             CheckSourceArrIndex();
-            _action();
+            audioSourceArr[sourceArrIndex].PlayOneShot(_clip);
             sourceArrIndex++;
         }
         private void CheckSourceArrIndex()

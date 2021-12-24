@@ -37,4 +37,11 @@ namespace StaticDataScripts
         F,
         X
     }
+    public enum Judgement 
+    {
+        Okay,
+        Great,
+        Perfect,
+        Miss
+    }
 }

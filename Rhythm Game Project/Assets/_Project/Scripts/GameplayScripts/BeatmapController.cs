@@ -16,6 +16,7 @@ namespace GameplayScripts
         [SerializeField] private HitObjectFollower hitObjectFollower = default;
         [SerializeField] private AccuracyManager accuracyManager = default;
         [SerializeField] private ScoreManager scoreManager = default;
+        [SerializeField] private GameplayStartPrompt gameplayStartPrompt = default;
         private IEnumerator initializeStartCoroutine;
         public Beatmap Beatmap { get; private set; }
         public bool IsRunning { get; private set; }
@@ -40,6 +41,8 @@ namespace GameplayScripts
         private IEnumerator InitializeStartCoroutine(double _delay)
         {
             IsInitialized = true;
+            gameplayStartPrompt.Deactivate();
+            yield return new WaitForSeconds((GameplayStartPrompt.DeactivateDuration + 1));
             countdown.PlayCountdown((int)_delay);
             yield return new WaitForSeconds((float)_delay);
             metronome.Play(_delay);

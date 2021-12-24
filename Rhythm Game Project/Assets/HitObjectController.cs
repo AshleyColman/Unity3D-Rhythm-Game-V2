@@ -1,4 +1,5 @@
 using AudioScripts;
+using StaticDataScripts;
 using System.Collections;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace GameplayScripts
         [SerializeField] private HitObjectFollower hitObjectFollower = default;
         [SerializeField] private FeverManager feverManager = default;
         [SerializeField] private AccuracyManager accuracyManager = default;
+        [SerializeField] private JudgementManager judgementManager = default;
         private double windowMilliseconds = 0.050;
         private double missTime = 0;
         private double okayLateStartTime = 0;
@@ -23,22 +25,20 @@ namespace GameplayScripts
         private double perfectStartTime = 0;
         private double greatEarlyStartTime = 0;
         private double okayEarlyStartTime = 0;
-        [SerializeField] private int currentObjectIndex = 0;
+        private int currentObjectIndex = 0;
+        private bool allowPerfectKeyHeldDown = false;
         private IEnumerator trackHitobjects;
 
         public HitObject CurrentObject { get; private set; }
 
         public void SetCurrentObject()
         {
-            if (spawnManager.AllSpawned == false)
+            if (CurrentObject is null)
             {
-                if (CurrentObject is null)
+                if (spawnManager.HitObjectIndex > currentObjectIndex)
                 {
-                    if (spawnManager.HitObjectIndex > currentObjectIndex)
-                    {
-                        CurrentObject = spawnManager.SpawnedList[currentObjectIndex];
-                        SetJudgements();
-                    }
+                    CurrentObject = spawnManager.SpawnedList[currentObjectIndex];
+                    SetJudgements();
                 }
             }
         }
@@ -63,8 +63,25 @@ namespace GameplayScripts
                 if (audioManager.SongAudioSourceTime >= okayEarlyStartTime &&
                     audioManager.SongAudioSourceTime < missTime)
                 {
-                    HasHit(JudgementData.PerfectScore);
+                    CheckJudgements(audioManager.SongAudioSourceTime);
                 }
+            }
+        }
+        private void CheckJudgements(double _time)
+        {
+            if (_time >= okayEarlyStartTime && _time < greatEarlyStartTime ||
+                _time >= okayLateStartTime && _time < missTime)
+            {
+                HasHit(Judgement.Okay);
+            }
+            else if (_time >= greatEarlyStartTime && _time < perfectStartTime ||
+                _time >= greatLateStartTime && _time < okayLateStartTime)
+            {
+                HasHit(Judgement.Great);
+            }
+            else if (_time >= perfectStartTime && _time < greatLateStartTime)
+            {
+                HasHit(Judgement.Perfect);
             }
         }
         private IEnumerator TrackObjectsCoroutine()
@@ -73,24 +90,53 @@ namespace GameplayScripts
             {
                 if (CurrentObject != null)
                 {
-                    if (Input.anyKey)
+                    if (Input.GetKeyDown(KeyCode.P))
                     {
-                        AutoPlayHit();
+                        if (allowPerfectKeyHeldDown == true)
+                        {
+                            allowPerfectKeyHeldDown = false;
+                        }
+                        else
+                        {
+                            allowPerfectKeyHeldDown = true;
+                        }
+                    }
+                    if (allowPerfectKeyHeldDown == true)
+                    {
+                        if (Input.anyKey)
+                        {
+                            AutoPlayPerfectHit();
+                        }
+                        else
+                        {
+                            CheckMiss();
+                        }
                     }
                     else
                     {
-                        CheckMiss();
+                        if (Input.anyKeyDown)
+                        {
+                            CheckHit();
+                        }
+                        else
+                        {
+                            CheckMiss();
+                        }
                     }
                 }
                 yield return null;
             }
             yield return null;
         }
-        private void AutoPlayHit()
+        private void AutoPlayPerfectHit()
         {
             if (audioManager.SongAudioSourceTime >= (perfectStartTime + windowMilliseconds))
             {
-                HasHit(JudgementData.PerfectScore);
+                HasHit(Judgement.Perfect);
+            }
+            else
+            {
+                CheckMiss();
             }
         }
         private void IncrementCurrentObjectIndex() => currentObjectIndex++;
@@ -104,13 +150,15 @@ namespace GameplayScripts
             greatEarlyStartTime = hitTime - (windowMilliseconds * 3);
             okayEarlyStartTime = hitTime - (windowMilliseconds * 5);
         }
-        private void HasHit(int _judgementScore)
+        private void HasHit(Judgement _judgement)
         {
-            soundEffectManager.PlayHitEffect();
-            scoreManager.IncreaseScore(_judgementScore);
+            soundEffectManager.PlayEffect(soundEffectManager.hitClip);
+            scoreManager.IncreaseScore(JudgementData.GetJudgementScore(_judgement));
             comboManager.IncreaseCombo();
+            judgementManager.IncrementJudgement(_judgement);
             accuracyManager.UpdateAccuracy();
             feverManager.OnHit();
+            CurrentObject.SetJudgement(_judgement);
             CurrentObject.PlayHitTween();
             SetCurrentObjectNull();
             IncrementCurrentObjectIndex();
@@ -126,8 +174,9 @@ namespace GameplayScripts
         }
         private void HasMissed()
         {
-            soundEffectManager.PlayMissEffect();
             comboManager.ResetCombo();
+            CurrentObject.SetJudgement(Judgement.Miss);
+            judgementManager.IncrementJudgement(Judgement.Miss);
             CurrentObject.PlayMissTween();
             SetCurrentObjectNull();
             IncrementCurrentObjectIndex();

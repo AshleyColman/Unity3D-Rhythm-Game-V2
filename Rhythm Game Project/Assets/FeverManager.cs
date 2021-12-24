@@ -16,6 +16,7 @@ namespace GameplayScripts
         [SerializeField] private FeverBackground feverBackground = default;
         [SerializeField] private FeverSlider feverSlider = default;
         [SerializeField] private AudioManager audioManager = default;
+        [SerializeField] private SoundEffectManager soundEffectManager = default;
         [SerializeField] private ParticleSystem particles = default;
         private double tickDuration = 0.34;
         private double measureDuration = 0;
@@ -85,8 +86,11 @@ namespace GameplayScripts
                 Activated = true;
                 CanActivate = false;
                 hitPointTargetIndex--;
+                soundEffectManager.PlayEffect(soundEffectManager.select2Clip);
+                audioManager.EnableReverbFilter();
                 multiplierManager.ApplyBonusMultiplier();
                 feverSlider.SetSliderLerpValues();
+                feverSlider.PlayFlash();
                 feverBackground.PlayAnimation();
                 particles.gameObject.SetActive(true);
                 TrackActivatedTime();

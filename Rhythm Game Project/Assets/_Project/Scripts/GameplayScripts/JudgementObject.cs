@@ -10,11 +10,11 @@ namespace GameplayScripts
         [SerializeField] private Image colorImage = default;
         public void Activate() => gameObject.SetActive(true);
         public void Deactivate() => gameObject.SetActive(false);
-        public void SetObjectProperties(Color32 _imageColor, Color _particleColor)
+        public void SetObjectProperties(Color _color)
         {
-            colorImage.color = _imageColor;
+            colorImage.color = _color;
             ParticleSystem.MainModule mainModule = particles.main;
-            mainModule.startColor = _particleColor;
+            mainModule.startColor = _color;
         }
     }
 }

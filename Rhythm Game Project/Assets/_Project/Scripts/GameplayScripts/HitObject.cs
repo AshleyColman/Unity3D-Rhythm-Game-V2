@@ -21,6 +21,11 @@
         private Quaternion startingRotation;
         private bool setStartingRotation = false;
         private float approachTime = 0;
+
+        public void SetJudgement(Judgement _judgement)
+        {
+            judgementObject.SetObjectProperties(JudgementData.GetJudgementColor(_judgement));
+        }
         public void PlayHitTween()
         {
             if (playHitTweenCoroutine != null)

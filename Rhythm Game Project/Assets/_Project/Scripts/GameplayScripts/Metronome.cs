@@ -15,18 +15,18 @@ public sealed class Metronome : MonoBehaviour
     [SerializeField] private AudioClip highClip = default;
     [SerializeField] private AudioClip lowClip = default;
     [SerializeField] private ToMainThread toMainThread = default;
-    [SerializeField] private int step = 4;
-    [SerializeField] private int root = 4;
-    [SerializeField] private int currentMeasure = 0;
-    [SerializeField] private int currentStep = 0;
-    [SerializeField] private int currentTick = 0;
-    [SerializeField] private float beatsPerMinute = 120f;
-    [SerializeField] private List<double> tickTimeList = new List<double>();
-    [SerializeField] private double interval = 0;
-    [SerializeField] private double offsetMilliseconds = 0f;
-    [SerializeField] private bool neverPlayed = true;
-    [SerializeField] private bool metronomeMuted = false;
-    [SerializeField] private bool active = false;
+    private int step = 4;
+    private int root = 4;
+    private int currentMeasure = 0;
+    private int currentStep = 0;
+    private int currentTick = 0;
+    private float beatsPerMinute = 120f;
+    private List<double> tickTimeList = new List<double>();
+    private double interval = 0;
+    private double offsetMilliseconds = 0f;
+    private bool neverPlayed = true;
+    private bool metronomeMuted = true;
+    private bool active = false;
 
     public void SetTiming(float _beatsPerMinute = 120f, double _offsetMilliseconds = 0f)
     {

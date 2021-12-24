@@ -13,6 +13,8 @@ namespace GameplayScripts
         private int highestCombo = 0;
         [SerializeField] private EffectText comboText = default;
         [SerializeField] private MissOverlay missOverlay = default;
+        [SerializeField] private SoundEffectManager soundEffectManager = default;
+        private IEnumerator playComboBreakTween;
 
         public void ResetCombo()
         {
@@ -33,6 +35,7 @@ namespace GameplayScripts
             if (combo >= ComboBreak)
             {
                 PlayComboBreakTween();
+                soundEffectManager.PlayEffect(soundEffectManager.missClip);
             }
             else
             {
@@ -48,9 +51,21 @@ namespace GameplayScripts
         }
         private void PlayComboBreakTween()
         {
+            if (playComboBreakTween != null)
+            {
+                StopCoroutine(playComboBreakTween);
+            }
+            playComboBreakTween = PlayComboBreakTweenCoroutine();
+            StartCoroutine(playComboBreakTween);
+        }
+        private IEnumerator PlayComboBreakTweenCoroutine()
+        {
             comboText.PlaySetEasePunchTween();
             comboText.SetColor(Colors.Red);
             missOverlay.PlayOverlayTween();
+            yield return new WaitForSeconds(0.25f);
+            comboText.SetColor(Colors.White);
+            yield return null;
         }
         private void PlayComboIncreaseTween() => comboText.PlaySetEasePunchTween();
         private void PlayComboResetTween()

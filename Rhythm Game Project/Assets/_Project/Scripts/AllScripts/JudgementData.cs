@@ -1,12 +1,35 @@
 
 
+using StaticDataScripts;
+using UIScripts;
+using UnityEngine;
+
 public static class JudgementData
 {
-    public static readonly ushort OkayScore = 50;
-    public static readonly ushort GreatScore = 100;
-    public static readonly ushort PerfectScore = 250;
-
-    public static readonly byte OkayHealth = 1;
-    public static readonly byte GreatHealth = 2;
-    public static readonly byte PerfectHealth = 5;
+    public static readonly int OkayScore = 50;
+    public static readonly int GreatScore = 100;
+    public static readonly int PerfectScore = 250;
+    public static readonly int MissScore = 0;
+    public static int GetJudgementScore(Judgement _judgement)
+    {
+        int score = _judgement switch
+        {
+            Judgement.Okay => OkayScore,
+            Judgement.Great => GreatScore,
+            Judgement.Perfect => PerfectScore,
+            _ => MissScore
+        };
+        return score;
+    }
+    public static Color32 GetJudgementColor(Judgement _judgement)
+    {
+        Color32 color = _judgement switch
+        {
+            Judgement.Okay => Colors.Pink,
+            Judgement.Great => Colors.DarkBlue,
+            Judgement.Perfect => Colors.Yellow,
+            _ => Colors.Red
+        };
+        return color;
+    }
 }
