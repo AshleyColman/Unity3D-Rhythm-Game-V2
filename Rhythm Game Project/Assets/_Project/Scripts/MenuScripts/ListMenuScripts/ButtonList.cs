@@ -81,7 +81,7 @@ namespace ListMenuScripts
                 {
                     BeatmapButton button = Instantiate(buttonPrefab, scrollRect.content);
                     BeatmapButtonList.Add(button);
-                    imageLoader.LoadCompressedImage(ImageLoadType.File, $"{directory}/{FileNames.Image}{FileTypes.Image}", button.BeatmapImage);
+                    imageLoader.LoadImage(ImageLoadType.File, true, $"{directory}/{FileNames.Image}{FileTypes.Image}", button.BeatmapImage);
                     button.SetButton((index+1).ToString(), beatmap.Title, beatmap.Artist, beatmap.Creator, beatmap.CreatedDate.ToString(), beatmap.Mode, Colors.GetModeColor(beatmap.Mode));
                     yield return instantiateWait;
                 }

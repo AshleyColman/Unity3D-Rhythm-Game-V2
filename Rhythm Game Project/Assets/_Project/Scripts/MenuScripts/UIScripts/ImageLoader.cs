@@ -12,11 +12,11 @@ namespace UIScripts
     {
         [SerializeField] private MaterialLoader materialLoader = default;
 
-        public void LoadCompressedImage(ImageLoadType _imageLoadType, string _path, Image _image, Action _action = null)
+        public void LoadImage(ImageLoadType _imageLoadType, bool _compress, string _path, Image _image, Action _action = null)
         {
-            StartCoroutine(LoadCompressedImageCoroutine(_imageLoadType, _path, _image, _action));
+            StartCoroutine(LoadImageCoroutine(_imageLoadType, _compress, _path, _image, _action));
         }
-        private IEnumerator LoadCompressedImageCoroutine(ImageLoadType _imageLoadType, string _path, Image _image, 
+        private IEnumerator LoadImageCoroutine(ImageLoadType _imageLoadType, bool _compress, string _path, Image _image, 
             Action _action = null)
         {
             if (_imageLoadType == ImageLoadType.File)
@@ -40,12 +40,15 @@ namespace UIScripts
                     uwr.result == UnityWebRequest.Result.DataProcessingError ||
                     uwr.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    //Debug.Log("Error loading image");
+                    
                 }
                 else
                 {
                     Texture2D downloadedTexture = DownloadHandlerTexture.GetContent(uwr);
-                    SetPerformance(downloadedTexture);
+                    if (_compress == true)
+                    {
+                        SetCompression(downloadedTexture);
+                    }
                     ApplyMaterial(_image, downloadedTexture);
                 }
             }
@@ -56,7 +59,7 @@ namespace UIScripts
             }
             yield return null;
         }
-        private void SetPerformance(Texture2D _texture)
+        private void SetCompression(Texture2D _texture)
         {
             _texture.filterMode = FilterMode.Trilinear;
             _texture.wrapMode = TextureWrapMode.Clamp;

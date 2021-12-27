@@ -28,11 +28,47 @@ namespace FileScripts
             }
         }
         public void OpenBeatmapDirectory() => Application.OpenURL(BeatmapDirectoryPath);
+        public string GetFirstDirectoryImageFile(string _directory)
+        {
+            string[] allFiles = GetAllDirectoryImageFiles(_directory);
+            if (allFiles.Length != 0)
+            {
+                return allFiles[0];
+            }
+            return string.Empty;
+        }
+        public string GetFirstDirectoryAudioFile(string _directory)
+        {
+            string[] allFiles = GetAllDirectoryAudioFiles(_directory);
+            if (allFiles.Length != 0)
+            {
+                return allFiles[0];
+            }
+            return string.Empty;
+        }
         private void Awake()
         {
             SetBeatmapDirectoryPath();
             CreateBeatmapFolder();
             SetBeatmapDirectories();
+        }
+        private string[] GetAllDirectoryImageFiles(string _directory)
+        {
+            string[] pngFiles = Directory.GetFiles(_directory, $"*{FileTypes.Image[0]}");
+            string[] jpgFiles = Directory.GetFiles(_directory, $"*{FileTypes.Image[1]}");
+            string[] allFiles = new string[pngFiles.Length + jpgFiles.Length];
+            pngFiles.CopyTo(allFiles, 0);
+            jpgFiles.CopyTo(allFiles, pngFiles.Length);
+            return allFiles;
+        }
+        private string[] GetAllDirectoryAudioFiles(string _directory)
+        {
+            string[] mp3Files = Directory.GetFiles(_directory, $"*{FileTypes.Audio[0]}");
+            string[] oggFiles = Directory.GetFiles(_directory, $"*{FileTypes.Audio[1]}");
+            string[] allFiles = new string[mp3Files.Length + oggFiles.Length];
+            mp3Files.CopyTo(allFiles, 0);
+            oggFiles.CopyTo(allFiles, mp3Files.Length);
+            return allFiles;
         }
         private void CreateBeatmapFolder() => Directory.CreateDirectory(BeatmapDirectoryPath);
         private void CreateFolderInBeatmapFolder(string folder) => Directory.CreateDirectory($"{BeatmapDirectoryPath}/{folder}");

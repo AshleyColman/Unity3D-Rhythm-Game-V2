@@ -5,14 +5,24 @@ namespace UIScripts
     public sealed class MaterialLoader : MonoBehaviour
     {
         public Material DefaultMaterial { get; private set; }
-        private Shader imageShader;
+        [SerializeField] private Shader shader = default;
 
-        public Material GetNewMaterial() => new Material(imageShader);
-        private void Awake()
+        public Material GetNewMaterial() 
         {
-            SetImageShader();
+            FindShaderIfNull();
+            return new Material(shader);
         }
-        private void SetImageShader() => imageShader = Shader.Find("UI/Unlit/Transparent");
-        private void SetDefaultMaterial() => DefaultMaterial = new Material(imageShader);
+        private void FindShaderIfNull()
+        {
+            if (shader == null)
+            {
+                shader = Shader.Find("UI/Unlit/Transparent");
+            }
+        }
+        private void SetDefaultMaterial()
+        {
+            FindShaderIfNull();
+            DefaultMaterial = new Material(shader);
+        }
     }
 }

@@ -49,14 +49,14 @@ namespace BeatmapMenuScripts
             if (_data.Length == 0 || _data == null) 
             {
                 buttonArr[_buttonIndex].SetButtonNoData();
-                imageLoader.LoadCompressedImage(ImageLoadType.Url, string.Empty, buttonArr[_buttonIndex].playerImage,
+                imageLoader.LoadImage(ImageLoadType.Url, true, string.Empty, buttonArr[_buttonIndex].playerImage,
                    IncrementImageCounter);
             }
             else 
             {
                 if (string.IsNullOrEmpty(_data[5]) == false)
                 {
-                    imageLoader.LoadCompressedImage(ImageLoadType.Url, _data[5], buttonArr[_buttonIndex].playerImage,
+                    imageLoader.LoadImage(ImageLoadType.Url, true, _data[5], buttonArr[_buttonIndex].playerImage,
                         IncrementImageCounter);
                 }
                 buttonArr[_buttonIndex].SetButton(_data[0], _data[1], _data[2], _data[3], rankData.GetRank(_data[4]));
