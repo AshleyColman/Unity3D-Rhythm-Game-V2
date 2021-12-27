@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using TMPro;
 using AudioScripts;
+using AllMenuScripts;
 
 [RequireComponent(typeof(AudioSource))]
 public sealed class Metronome : MonoBehaviour
@@ -15,6 +16,7 @@ public sealed class Metronome : MonoBehaviour
     [SerializeField] private AudioClip highClip = default;
     [SerializeField] private AudioClip lowClip = default;
     [SerializeField] private ToMainThread toMainThread = default;
+    [SerializeField] private RhythmEffects rhythmEffects = default;
     private int step = 4;
     private int root = 4;
     private int currentMeasure = 0;
@@ -156,7 +158,7 @@ public sealed class Metronome : MonoBehaviour
                     {
                         currentStep = 1;
                         currentMeasure++;
-                        SetHighClip();
+                        OnMeasure();
                     }
                     else
                     {
@@ -169,9 +171,15 @@ public sealed class Metronome : MonoBehaviour
         }
         yield return null;
     }
+    private void OnMeasure()
+    {
+        SetHighClip();
+        rhythmEffects.OnMeasure();
+    }
     private IEnumerator OnTick()
     {
         PlayMetronome();
+        rhythmEffects.OnTick();
         yield return null;
     }
     private void OnAudioFilterRead(float[] _data, int _channels)

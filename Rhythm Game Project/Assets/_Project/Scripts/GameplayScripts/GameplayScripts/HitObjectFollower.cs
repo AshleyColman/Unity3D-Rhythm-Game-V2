@@ -9,7 +9,7 @@
         private const float TargetTime = 0.25f;
         [SerializeField] private BeatmapController beatmapController = default;
         [SerializeField] private HitObjectController hitObjectController = default;
-        private Transform followerTransform;
+        [SerializeField] private Transform followerTransform = default;
         private float timer = 0f;
         private IEnumerator moveToPositionCoroutine;
 
@@ -25,12 +25,11 @@
         }
         public void PlayRhythmTween()
         {
-            LeanTween.cancel(gameObject);
+            LeanTween.cancel(followerTransform.gameObject);
             followerTransform.localScale = Vector3.one;
-            LeanTween.scale(gameObject, VectorValues.Vector1_25, 0.1f).setLoopPingPong(1);
+            LeanTween.scale(followerTransform.gameObject, VectorValues.Vector1_25, 0.1f).setLoopPingPong(1);
         }
         private void ResetTimer() => timer = 0;
-        private void Awake() => followerTransform = gameObject.transform;
         private IEnumerator MoveToPositionCoroutine()
         {
             while (beatmapController.IsRunning == true)

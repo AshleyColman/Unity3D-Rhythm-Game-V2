@@ -7,7 +7,7 @@ namespace GameplayScripts
     {
         [SerializeField] private BeatmapController beatmapController = default;
         [SerializeField] private FeverManager feverManager = default;
-        [SerializeField] private Key[] keyArr = default;
+        [SerializeField] private KeyManager keyManager = default;
         private IEnumerator checkToRunGameplayCoroutine;
 
         private void Update()
@@ -45,7 +45,7 @@ namespace GameplayScripts
         {
             if (Input.anyKey)
             {
-                foreach (var key in keyArr)
+                foreach (var key in keyManager.KeyArr)
                 {
                     if (Input.GetKey(key.KeyCode))
                     {
@@ -60,7 +60,7 @@ namespace GameplayScripts
         }
         private void CheckKeyUp()
         {
-            foreach (var key in keyArr)
+            foreach (var key in keyManager.KeyArr)
             {
                 if (Input.GetKeyUp(key.KeyCode))
                 {

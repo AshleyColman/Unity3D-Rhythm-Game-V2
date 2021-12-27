@@ -184,6 +184,8 @@ MonoBehaviour:
   keyTextTransform: {fileID: 2935743403915050038}
   keyEffectTextTransform: {fileID: 2935743402870119397}
   keyAnimator: {fileID: 2371552141230208252}
+  text: {fileID: 1688480115499864461}
+  colorImage: {fileID: 2371552141615412852}
   <KeyCode>k__BackingField: 115
 --- !u!1 &2371552141305534264
 GameObject:
@@ -568,6 +570,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2935743403166624929}
+  - component: {fileID: 1688480115499864461}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -596,6 +599,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1688480115499864461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2935743403166624930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cb5fa56c4d55f44fb721e42159f9fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainText: {fileID: 2935743403915050037}
+  effectText: {fileID: 2935743402870119396}
 --- !u!1 &2935743403915050039
 GameObject:
   m_ObjectHideFlags: 0

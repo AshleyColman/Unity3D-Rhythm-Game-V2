@@ -24,6 +24,7 @@ namespace GameplayScripts
         [SerializeField] private AudioManager audioManager = default;
         [SerializeField] private BackgroundManager backgroundManager = default;
         [SerializeField] private FadeTransition fadeTransition = default;
+        [SerializeField] private KeyManager keyManager = default;
         private IEnumerator initializeStartCoroutine;
         public Beatmap Beatmap { get; private set; }
         public bool IsRunning { get; private set; }
@@ -32,6 +33,7 @@ namespace GameplayScripts
         {
             fadeTransition.TransitionIn();
             Beatmap = loader.LoadOsuFile();
+            keyManager.DisableKeys(Beatmap.Mode);
             audioManager.LoadAudio(fileManager.GetFirstDirectoryAudioFile($"{Application.persistentDataPath}/Beatmaps/OsuMap"), 0f);
             backgroundManager.LoadBackgroundImage(fileManager.GetFirstDirectoryImageFile($"{Application.persistentDataPath}/Beatmaps/OsuMap"));
             gameplayStartPrompt.LoadBeatmapImage(fileManager.GetFirstDirectoryImageFile($"{Application.persistentDataPath}/Beatmaps/OsuMap"));

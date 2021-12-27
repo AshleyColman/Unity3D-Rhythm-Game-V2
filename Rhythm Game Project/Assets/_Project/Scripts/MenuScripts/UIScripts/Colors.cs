@@ -7,6 +7,7 @@ namespace UIScripts
     {
         public static Color32 White = new Color32(255, 255, 255, 255);
         public static Color32 Grey = new Color32(200, 200, 200, 255);
+        public static Color32 DarkGrey05 = new Color32(76, 76, 76, 128);
         public static Color32 Black = new Color32(0, 0, 0, 255);
         public static Color32 Red = new Color32(242, 16, 28, 255);
         public static Color32 Red_80 = new Color32(242, 16, 28, 204);
